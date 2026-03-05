@@ -34,7 +34,8 @@ function NumInput({
         type="number"
         min={0}
         step={0.01}
-        value={value}
+        value={value || ''}
+        placeholder="0"
         onChange={e => onChange(parseFloat(e.target.value) || 0)}
         className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
       />

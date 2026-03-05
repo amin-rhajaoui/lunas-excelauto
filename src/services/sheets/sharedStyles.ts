@@ -31,6 +31,18 @@ export const PINK_FILL: Fill = {
   fgColor: { argb: 'F092E7' },
 };
 
+export const PRESSE_FILL: Fill = {
+  type: 'pattern',
+  pattern: 'solid',
+  fgColor: { argb: '92D050' },
+};
+
+export const PROD_PARIS_FILL: Fill = {
+  type: 'pattern',
+  pattern: 'solid',
+  fgColor: { argb: '00B0F0' },
+};
+
 // Fonts
 export const FONT_HEADER: Partial<Font> = {
   size: 22,

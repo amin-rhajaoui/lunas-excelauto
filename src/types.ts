@@ -45,24 +45,16 @@ export interface FabricationCollectionData {
 }
 
 export interface FabricationPresseData {
-  tempsCollection: number;           // D33
-  tempsPresse: number;               // D34
-  coutAtelierPresse: number;         // D35 (rate 48)
+  coutAtelierPresse: number;         // D33 (rate 48)
 }
 
 export interface FabricationProdParisData {
-  tempsCollection: number;           // D33
-  tempsPresse: number;               // D34
-  coutAtelierProd200m: number;       // D35 (rate 48)
+  coutAtelierProd200m: number;       // D33 (rate 48)
 }
 
 export interface FabricationProdDelocData {
-  tempsCollection: number;           // D33
-  tempsPresse: number;               // D34
-  coutAtelierManipTextile: number;   // D35 (rate 48)
-  coutAtelierBroderies: number;      // D36 (rate 58)
-  sousTraitanceMaroc: number;        // D37 (rate 7)
-  sousTraitanceMada: number;         // D38 (rate 7.5)
+  sousTraitanceMaroc: number;        // D32 (rate 7)
+  sousTraitanceMada: number;         // D33 (rate 7.5)
 }
 
 export interface MargesCollectionData {
@@ -86,6 +78,13 @@ export interface MargesProdDelocData {
   pvAbove3500: number;  // D57, default 1.55
 }
 
+export interface CommentairesData {
+  collection: string;
+  presse: string;
+  prodParis: string;
+  prodDeloc: string;
+}
+
 export interface FormData {
   header: HeaderData;
   fraisEngages: FraisEngagesData;
@@ -99,4 +98,5 @@ export interface FormData {
   margesPresse: MargesPresseData;
   margesProdParis: MargesProdParisData;
   margesProdDeloc: MargesProdDelocData;
+  commentaires: CommentairesData;
 }

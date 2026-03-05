@@ -19,7 +19,8 @@ export default function CoutsMatiereForm({ data, onChange }: Props) {
           type="number"
           min={0}
           step={0.01}
-          value={data.coutMatieresGalon}
+          value={data.coutMatieresGalon || ''}
+          placeholder="0"
           onChange={e => set('coutMatieresGalon', parseFloat(e.target.value) || 0)}
           className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
         />
@@ -33,7 +34,8 @@ export default function CoutsMatiereForm({ data, onChange }: Props) {
           min={0}
           max={1}
           step={0.01}
-          value={data.aleaPercent}
+          value={data.aleaPercent || ''}
+          placeholder="0"
           onChange={e => set('aleaPercent', parseFloat(e.target.value) || 0)}
           className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
         />
@@ -48,7 +50,8 @@ export default function CoutsMatiereForm({ data, onChange }: Props) {
           min={0}
           max={1}
           step={0.01}
-          value={data.aleaPercentProdDeloc}
+          value={data.aleaPercentProdDeloc || ''}
+          placeholder="0"
           onChange={e => set('aleaPercentProdDeloc', parseFloat(e.target.value) || 0)}
           className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
         />

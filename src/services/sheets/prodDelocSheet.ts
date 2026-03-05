@@ -12,15 +12,14 @@ import {
 } from './sharedStyles';
 
 export function buildProdDelocSheet(ws: Worksheet, form: FormData) {
-  // Column widths (A-G used, Societe in G2)
+  // Column widths (A-G only)
   ws.getColumn('A').width = 90.66;
   ws.getColumn('B').width = 43.55;
   ws.getColumn('C').width = 13.33;
   ws.getColumn('D').width = 21.11;
-  ws.getColumn('E').width = 20.44;
-  ws.getColumn('F').width = 6.33;
-  ws.getColumn('G').width = 19.55;
-  ws.getColumn('H').width = 55.89;
+  ws.getColumn('E').width = 27.78;
+  ws.getColumn('F').width = 28;
+  ws.getColumn('G').width = 55.89;
 
   // === HEADER ===
   ws.getRow(1).height = 21.6;
@@ -30,7 +29,7 @@ export function buildProdDelocSheet(ws: Worksheet, form: FormData) {
   ws.getRow(2).height = 24.9;
   ws.getCell('A2').value = 'CLIENT * :'; ws.getCell('A2').font = FONT_HEADER;
   ws.getCell('B2').value = form.header.client; ws.getCell('B2').font = FONT_HEADER; ws.getCell('B2').fill = YELLOW_FILL;
-  // Societe in G2 for Prod deloc (not H2)
+  // Societe in F2/G2 for Prod deloc
   ws.getCell('F2').value = 'SOCIETE * :'; ws.getCell('F2').font = FONT_HEADER;
   ws.getCell('G2').value = form.header.societe; ws.getCell('G2').font = FONT_HEADER; ws.getCell('G2').fill = YELLOW_FILL;
 
@@ -42,8 +41,9 @@ export function buildProdDelocSheet(ws: Worksheet, form: FormData) {
   ws.getCell('A4').value = 'PROJET / REFERENCE * :'; ws.getCell('A4').font = FONT_HEADER;
   ws.getCell('B4').value = form.header.projet; ws.getCell('B4').font = FONT_HEADER; ws.getCell('B4').fill = YELLOW_FILL;
 
-  ws.mergeCells('E4:H5');
-  ws.getCell('E4').value = 'PRIX PRODUCTION\nDéloc\n';
+  // Title E4:G5 (not H)
+  ws.mergeCells('E4:G5');
+  ws.getCell('E4').value = 'PRIX PRODUCTION\nDELOC\n';
   ws.getCell('E4').font = FONT_TITLE;
   ws.getCell('E4').fill = PINK_FILL;
   ws.getCell('E4').alignment = ALIGN_CENTER;
@@ -55,7 +55,7 @@ export function buildProdDelocSheet(ws: Worksheet, form: FormData) {
 
   // === SECTION 1 ===
   ws.getRow(6).height = 29.4;
-  ws.mergeCells('A6:H6');
+  ws.mergeCells('A6:G6');
   ws.getCell('A6').value = '1- FRAIS ENGAGES'; ws.getCell('A6').font = FONT_DATA_BOLD; ws.getCell('A6').fill = SECTION_FILL; ws.getCell('A6').border = BORDER_MEDIUM_ALL; ws.getCell('A6').alignment = ALIGN_LEFT;
 
   ws.getRow(7).height = 72;
@@ -125,119 +125,135 @@ export function buildProdDelocSheet(ws: Worksheet, form: FormData) {
   ws.getCell('D20').value = form.fraisEngages.tempsGradationHeures; ws.getCell('D20').fill = YELLOW_FILL; ws.getCell('D20').font = FONT_DATA;
   ws.getCell('E20').value = { formula: 'B20*D20' }; ws.getCell('E20').numFmt = FMT_EURO;
 
-  // ROW 22: Total frais (same as other sheets)
+  // ROW 22: Total frais
   ws.getRow(22).height = 29.4;
-  ws.getCell('A22').value = 'TOTAL FRAIS ENGAGES PROD DELOC'; ws.getCell('A22').font = FONT_DATA_BOLD; ws.getCell('A22').fill = SECTION_FILL;
+  ws.getCell('A22').value = 'TOTAL FRAIS ENGAGES COLLECTION'; ws.getCell('A22').font = FONT_DATA_BOLD; ws.getCell('A22').fill = SECTION_FILL;
   ws.getCell('E22').value = { formula: 'SUM(E9:E15)' }; ws.getCell('E22').numFmt = FMT_EURO; ws.getCell('E22').font = FONT_DATA_BOLD; ws.getCell('E22').fill = SECTION_FILL;
 
-  // === SECTION 2: Matieres (E26 for input, different row layout) ===
+  // === SECTION 2: Matieres ===
   ws.getRow(24).height = 29.4;
-  ws.mergeCells('A24:H24');
+  ws.mergeCells('A24:G24');
   ws.getCell('A24').value = '2- COUTS DES MATIERES'; ws.getCell('A24').font = FONT_DATA_BOLD; ws.getCell('A24').fill = SECTION_FILL; ws.getCell('A24').border = BORDER_MEDIUM_ALL; ws.getCell('A24').alignment = ALIGN_LEFT;
 
   ws.getRow(25).height = 42.6;
   ws.mergeCells('D25:E25');
   ws.getCell('D25').value = 'Coût necessaire par unité'; ws.getCell('D25').font = FONT_SUB_HEADER; ws.getCell('D25').alignment = ALIGN_CENTER;
-  ws.mergeCells('F25:H28');
+  ws.mergeCells('F25:G28');
   ws.getCell('F25').value = 'Commentaires :'; ws.getCell('F25').font = FONT_DATA;
 
   ws.getRow(26).height = 28.8;
   ws.getCell('A26').value = 'Coût matieres du galon au mtrs (fils ou autres)'; ws.getCell('A26').font = FONT_DATA;
   ws.getCell('E26').value = form.coutsMatieres.coutMatieresGalon; ws.getCell('E26').fill = YELLOW_FILL; ws.getCell('E26').numFmt = FMT_EURO; ws.getCell('E26').font = FONT_DATA;
 
-  ws.getRow(28).height = 28.8;
-  ws.getCell('A28').value = '% matières pour atelier déloc ( A définir avec la prod)'; ws.getCell('A28').font = FONT_DATA;
-  ws.getCell('B28').value = '3 ou 5 % ??'; ws.getCell('B28').font = FONT_DATA;
-  ws.getCell('D28').value = form.coutsMatieres.aleaPercentProdDeloc; ws.getCell('D28').fill = YELLOW_FILL; ws.getCell('D28').numFmt = FMT_PERCENT; ws.getCell('D28').font = FONT_DATA;
-  ws.getCell('E28').value = { formula: 'E26*D28' }; ws.getCell('E28').numFmt = FMT_EURO;
+  // ROW 27: % matières
+  ws.getRow(27).height = 28.8;
+  ws.getCell('A27').value = '% matières pour atelier déloc ( A définir avec la prod)'; ws.getCell('A27').font = FONT_DATA;
+  ws.getCell('B27').value = '5 ou 10 %'; ws.getCell('B27').font = FONT_DATA;
+  ws.getCell('D27').value = form.coutsMatieres.aleaPercentProdDeloc; ws.getCell('D27').fill = YELLOW_FILL; ws.getCell('D27').numFmt = FMT_PERCENT; ws.getCell('D27').font = FONT_DATA;
+  ws.getCell('E27').value = { formula: 'E26*D27' }; ws.getCell('E27').numFmt = FMT_EURO;
 
-  // ROW 29: Total matieres (in row 29 for Prod deloc, NOT 30)
-  ws.getRow(29).height = 30.6;
-  ws.getCell('A29').value = 'TOTAL MATIERES'; ws.getCell('A29').font = FONT_DATA_BOLD; ws.getCell('A29').fill = SECTION_FILL;
-  ws.getCell('E29').value = { formula: 'E26+E28' }; ws.getCell('E29').numFmt = FMT_EURO; ws.getCell('E29').font = FONT_DATA_BOLD; ws.getCell('E29').fill = SECTION_FILL;
+  // ROW 28: Total matieres
+  ws.getRow(28).height = 30.6;
+  ws.getCell('A28').value = 'TOTAL MATIERES'; ws.getCell('A28').font = FONT_DATA_BOLD; ws.getCell('A28').fill = SECTION_FILL;
+  ws.getCell('E28').value = { formula: 'E26+E27' }; ws.getCell('E28').numFmt = FMT_EURO; ws.getCell('E28').font = FONT_DATA_BOLD; ws.getCell('E28').fill = SECTION_FILL;
 
-  // === SECTION 3: Fabrication (6 rows: 33-38) ===
-  ws.getRow(31).height = 29.4;
-  ws.getCell('A31').value = '3- TEMPS DE FABRICATION'; ws.getCell('A31').font = FONT_DATA_BOLD; ws.getCell('A31').fill = SECTION_FILL;
-
-  ws.getRow(32).height = 58.2;
-  ['A', 'B', 'C', 'D', 'E'].forEach((col, i) => {
-    const c = ws.getCell(`${col}32`); c.value = headers[i]; c.font = FONT_DATA_BOLD; c.border = BORDER_MEDIUM_ALL; c.alignment = ALIGN_CENTER;
+  // === SECTION 3: Fabrication ===
+  // ROW 30: Section header + column headers (same line)
+  ws.getRow(30).height = 58.2;
+  ws.getCell('A30').value = '3- TEMPS DE FABRICATION';
+  ws.getCell('A30').font = FONT_DATA_BOLD;
+  ws.getCell('A30').fill = SECTION_FILL;
+  ws.getCell('A30').border = BORDER_MEDIUM_ALL;
+  ws.getCell('A30').alignment = ALIGN_LEFT;
+  const fabColHeaders = ['Coût unitaire', 'Unité', 'Unités Nécessaires', 'Prix de revient HT'];
+  ['B', 'C', 'D', 'E'].forEach((col, i) => {
+    const c = ws.getCell(`${col}30`);
+    c.value = fabColHeaders[i]; c.font = FONT_DATA_BOLD; c.border = BORDER_MEDIUM_ALL; c.alignment = ALIGN_CENTER;
   });
 
-  const fabRows: Array<{ row: number; label: string; rate: number; value: number }> = [
-    { row: 33, label: 'Temps Collection', rate: 30, value: form.fabricationProdDeloc.tempsCollection },
-    { row: 34, label: 'temps Presse', rate: 30, value: form.fabricationProdDeloc.tempsPresse },
-    { row: 35, label: 'Cout atelier M2P Manip Textile', rate: 48, value: form.fabricationProdDeloc.coutAtelierManipTextile },
-    { row: 36, label: 'Coût atelier M2P broderies', rate: 58, value: form.fabricationProdDeloc.coutAtelierBroderies },
-    { row: 37, label: 'Sous traitance deloc Maroc', rate: 7, value: form.fabricationProdDeloc.sousTraitanceMaroc },
-    { row: 38, label: 'Sous traitance deloc Mada', rate: 7.5, value: form.fabricationProdDeloc.sousTraitanceMada },
-  ];
+  // ROW 31: Info atelier (pink fill, no data)
+  ws.getRow(31).height = 28.8;
+  ws.getCell('A31').value = 'Information atelier';
+  ws.getCell('A31').font = FONT_DATA;
+  ws.getCell('A31').fill = PINK_FILL;
+  ws.getCell('B31').fill = PINK_FILL;
+  ws.getCell('B31').numFmt = FMT_EURO_ACCOUNTING;
+  ws.getCell('C31').fill = PINK_FILL;
+  ws.getCell('D31').fill = PINK_FILL;
+  ws.getCell('D31').numFmt = FMT_EURO_ACCOUNTING;
+  ws.getCell('E31').fill = PINK_FILL;
+  ws.getCell('E31').numFmt = FMT_EURO_ACCOUNTING;
 
-  for (const fr of fabRows) {
-    ws.getRow(fr.row).height = 28.8;
-    ws.getCell(`A${fr.row}`).value = fr.label; ws.getCell(`A${fr.row}`).font = FONT_DATA;
-    ws.getCell(`B${fr.row}`).value = fr.rate; ws.getCell(`B${fr.row}`).numFmt = FMT_EURO_ACCOUNTING; ws.getCell(`B${fr.row}`).font = FONT_DATA;
-    ws.getCell(`C${fr.row}`).value = 'heure'; ws.getCell(`C${fr.row}`).font = FONT_DATA;
-    ws.getCell(`D${fr.row}`).value = fr.value; ws.getCell(`D${fr.row}`).fill = YELLOW_FILL; ws.getCell(`D${fr.row}`).font = FONT_DATA;
-    ws.getCell(`E${fr.row}`).value = { formula: `B${fr.row}*D${fr.row}` }; ws.getCell(`E${fr.row}`).numFmt = FMT_EURO_ACCOUNTING;
-  }
+  // ROW 32: Maroc (rate 7)
+  ws.getRow(32).height = 28.8;
+  ws.getCell('A32').value = 'Coût Sous traitance deloc Maroc prod'; ws.getCell('A32').font = FONT_DATA;
+  ws.getCell('B32').value = 7; ws.getCell('B32').numFmt = FMT_EURO_ACCOUNTING; ws.getCell('B32').font = FONT_DATA;
+  ws.getCell('C32').value = 'heure'; ws.getCell('C32').font = FONT_DATA;
+  ws.getCell('D32').value = form.fabricationProdDeloc.sousTraitanceMaroc; ws.getCell('D32').fill = YELLOW_FILL; ws.getCell('D32').font = FONT_DATA;
+  ws.getCell('E32').value = { formula: 'B32*D32' }; ws.getCell('E32').numFmt = FMT_EURO_ACCOUNTING;
 
-  // ROW 40: Total fabrication
-  ws.getRow(40).height = 29.4;
-  ws.getCell('A40').value = 'TOTAL FABRICATION'; ws.getCell('A40').font = FONT_DATA_BOLD; ws.getCell('A40').fill = SECTION_FILL;
-  ws.getCell('E40').value = { formula: 'SUM(E33:E38)' }; ws.getCell('E40').numFmt = FMT_EURO_ACCOUNTING; ws.getCell('E40').font = FONT_DATA_BOLD; ws.getCell('E40').fill = SECTION_FILL;
+  // ROW 33: Mada (rate 7.5)
+  ws.getRow(33).height = 28.8;
+  ws.getCell('A33').value = 'Coût sous traitance deloc Mada prod'; ws.getCell('A33').font = FONT_DATA;
+  ws.getCell('B33').value = 7.5; ws.getCell('B33').numFmt = FMT_EURO_ACCOUNTING; ws.getCell('B33').font = FONT_DATA;
+  ws.getCell('C33').value = 'heure'; ws.getCell('C33').font = FONT_DATA;
+  ws.getCell('D33').value = form.fabricationProdDeloc.sousTraitanceMada; ws.getCell('D33').fill = YELLOW_FILL; ws.getCell('D33').font = FONT_DATA;
+  ws.getCell('E33').value = { formula: 'B33*D33' }; ws.getCell('E33').numFmt = FMT_EURO_ACCOUNTING;
 
-  // === SECTION 4: Transport (LUNAS only, no CHA) ===
-  ws.getRow(42).height = 29.4;
-  ws.mergeCells('A42:H42');
-  ws.getCell('A42').value = '4- TRANSPORT'; ws.getCell('A42').font = FONT_DATA_BOLD; ws.getCell('A42').fill = SECTION_FILL; ws.getCell('A42').border = BORDER_MEDIUM_ALL; ws.getCell('A42').alignment = ALIGN_LEFT;
+  // ROW 34: Total fabrication
+  ws.getRow(34).height = 29.4;
+  ws.getCell('A34').value = 'TOTAL FABRICATION'; ws.getCell('A34').font = FONT_DATA_BOLD; ws.getCell('A34').fill = SECTION_FILL;
+  ws.getCell('E34').value = { formula: 'SUM(E31:E33)' }; ws.getCell('E34').numFmt = FMT_EURO_ACCOUNTING; ws.getCell('E34').font = FONT_DATA_BOLD; ws.getCell('E34').fill = SECTION_FILL;
 
-  ws.getRow(43).height = 28.8;
-  ws.getCell('A43').value = 'Transport'; ws.getCell('A43').font = FONT_DATA;
-  ws.getCell('E43').value = 'LUNAS'; ws.getCell('E43').font = FONT_DATA_BOLD;
+  // === SECTION 4: Transport (LUNAS only) ===
+  ws.getRow(36).height = 29.4;
+  ws.mergeCells('A36:G36');
+  ws.getCell('A36').value = '4- TRANSPORT'; ws.getCell('A36').font = FONT_DATA_BOLD; ws.getCell('A36').fill = SECTION_FILL; ws.getCell('A36').border = BORDER_MEDIUM_ALL; ws.getCell('A36').alignment = ALIGN_LEFT;
 
-  ws.getRow(44).height = 28.8;
-  ws.getCell('A44').value = 'taux transport'; ws.getCell('A44').font = FONT_DATA;
-  ws.getCell('E44').value = TRANSPORT_LUNAS; ws.getCell('E44').numFmt = FMT_PERCENT; ws.getCell('E44').font = FONT_DATA;
+  ws.getRow(37).height = 28.8;
+  ws.getCell('A37').value = 'Transport'; ws.getCell('A37').font = FONT_DATA;
+  ws.getCell('E37').value = 'LUNAS'; ws.getCell('E37').font = FONT_DATA_BOLD;
 
-  ws.getRow(45).height = 28.8;
-  ws.getCell('A45').value = 'total transport'; ws.getCell('A45').font = FONT_DATA;
+  ws.getRow(38).height = 28.8;
+  ws.getCell('A38').value = 'taux transport'; ws.getCell('A38').font = FONT_DATA;
+  ws.getCell('E38').value = TRANSPORT_LUNAS; ws.getCell('E38').numFmt = FMT_PERCENT; ws.getCell('E38').font = FONT_DATA;
+
+  ws.getRow(39).height = 28.8;
+  ws.getCell('A39').value = 'TOTAL TRANSPORT'; ws.getCell('A39').font = FONT_DATA;
   // Prod deloc uses $G$2 not $H$2
-  ws.getCell('E45').value = { formula: 'IF($G$2="LUNAS",(E40+E29)*E44,0)' }; ws.getCell('E45').numFmt = FMT_EURO;
+  ws.getCell('E39').value = { formula: 'IF($G$2="LUNAS",(E34+E28)*E38,0)' }; ws.getCell('E39').numFmt = FMT_EURO;
 
   // === SECTION 5: Prix de revient ===
-  ws.getRow(47).height = 29.4;
-  ws.mergeCells('A47:H47');
-  ws.getCell('A47').value = '5- PRIX DE REVIENT'; ws.getCell('A47').font = FONT_DATA_BOLD; ws.getCell('A47').fill = SECTION_FILL; ws.getCell('A47').border = BORDER_MEDIUM_ALL; ws.getCell('A47').alignment = ALIGN_LEFT;
+  ws.getRow(41).height = 29.4;
+  ws.mergeCells('A41:G41');
+  ws.getCell('A41').value = '5- LE PRIX DE REVIENT'; ws.getCell('A41').font = FONT_DATA_BOLD; ws.getCell('A41').fill = SECTION_FILL; ws.getCell('A41').border = BORDER_MEDIUM_ALL; ws.getCell('A41').alignment = ALIGN_LEFT;
 
-  ws.getRow(48).height = 32.4;
-  ws.getCell('A48').value = 'Activité'; ws.getCell('A48').font = FONT_DATA;
-  ws.getCell('B48').value = form.activite; ws.getCell('B48').fill = BRIGHT_YELLOW_FILL; ws.getCell('B48').font = FONT_DATA;
-  ws.getCell('E48').value = ACTIVITES[form.activite]; ws.getCell('E48').fill = BRIGHT_YELLOW_FILL; ws.getCell('E48').numFmt = FMT_INT; ws.getCell('E48').font = FONT_DATA;
+  ws.getRow(42).height = 32.4;
+  ws.getCell('A42').value = 'Activité'; ws.getCell('A42').font = FONT_DATA;
+  ws.getCell('B42').value = form.activite; ws.getCell('B42').fill = BRIGHT_YELLOW_FILL; ws.getCell('B42').font = FONT_DATA;
+  ws.getCell('E42').value = ACTIVITES[form.activite]; ws.getCell('E42').fill = BRIGHT_YELLOW_FILL; ws.getCell('E42').numFmt = FMT_INT; ws.getCell('E42').font = FONT_DATA;
 
-  ws.getRow(49).height = 28.8;
-  ws.getCell('A49').value = 'coût de fabrication (matières + fab)'; ws.getCell('A49').font = FONT_DATA;
-  // D49 = E29 + E40 + E45 (no F transport for prod deloc)
-  ws.getCell('D49').value = { formula: 'E29+E40+E45' }; ws.getCell('D49').numFmt = FMT_EURO_ACCOUNTING;
-  ws.getCell('E49').value = { formula: '1+(E48/100)' }; ws.getCell('E49').numFmt = FMT_DECIMAL2;
+  ws.getRow(43).height = 28.8;
+  ws.getCell('A43').value = 'coût de fabrication (matières + fab)'; ws.getCell('A43').font = FONT_DATA;
+  ws.getCell('D43').value = { formula: 'E28+E34+E39' }; ws.getCell('D43').numFmt = FMT_EURO_ACCOUNTING;
+  ws.getCell('E43').value = { formula: '1+(E42/100)' }; ws.getCell('E43').numFmt = FMT_DECIMAL2;
 
-  ws.getRow(51).height = 29.4;
-  ws.getCell('A51').value = 'TOTAL PRIX DE REVIENT'; ws.getCell('A51').font = FONT_DATA_BOLD; ws.getCell('A51').fill = SECTION_FILL;
-  ws.getCell('E51').value = { formula: 'E49*D49' }; ws.getCell('E51').numFmt = FMT_EURO_ACCOUNTING; ws.getCell('E51').font = FONT_DATA_BOLD; ws.getCell('E51').fill = SECTION_FILL;
+  ws.getRow(44).height = 29.4;
+  ws.getCell('A44').value = 'TOTAL PRIX DE REVIENT'; ws.getCell('A44').font = FONT_DATA_BOLD; ws.getCell('A44').fill = SECTION_FILL;
+  ws.getCell('E44').value = { formula: 'E43*D43' }; ws.getCell('E44').numFmt = FMT_EURO_ACCOUNTING; ws.getCell('E44').font = FONT_DATA_BOLD; ws.getCell('E44').fill = SECTION_FILL;
 
   // === SECTION 6: Prix de vente (4 tiers) ===
-  ws.getRow(53).height = 29.4;
-  ws.getCell('A53').value = '6 - PRIX DE VENTE PRODUCTION'; ws.getCell('A53').font = FONT_DATA_BOLD; ws.getCell('A53').fill = SECTION_FILL;
-  ws.getCell('D53').value = 'marge'; ws.getCell('D53').font = FONT_DATA;
-  ws.getCell('E53').value = 'PV'; ws.getCell('E53').font = FONT_DATA;
-  ws.mergeCells('F53:H53');
+  ws.getRow(46).height = 29.4;
+  ws.getCell('A46').value = '6 - PRIX DE VENTE PRODUCTION'; ws.getCell('A46').font = FONT_DATA_BOLD; ws.getCell('A46').fill = SECTION_FILL;
+  ws.getCell('D46').value = 'marge'; ws.getCell('D46').font = FONT_DATA;
+  ws.getCell('E46').value = 'PV'; ws.getCell('E46').font = FONT_DATA;
+  ws.mergeCells('F46:G46');
 
   const pvTiers: Array<{ row: number; label: string; margin: number; field: keyof typeof form.margesProdDeloc }> = [
-    { row: 54, label: '200 / 500 m', margin: form.margesProdDeloc.pv200_500, field: 'pv200_500' },
-    { row: 55, label: '501/2000 m', margin: form.margesProdDeloc.pv501_2000, field: 'pv501_2000' },
-    { row: 56, label: '2001/3500 m', margin: form.margesProdDeloc.pv2001_3500, field: 'pv2001_3500' },
-    { row: 57, label: 'au-delà 3500 m', margin: form.margesProdDeloc.pvAbove3500, field: 'pvAbove3500' },
+    { row: 47, label: '200 / 500 m', margin: form.margesProdDeloc.pv200_500, field: 'pv200_500' },
+    { row: 48, label: '501/2000 m', margin: form.margesProdDeloc.pv501_2000, field: 'pv501_2000' },
+    { row: 49, label: '2001/3500 m', margin: form.margesProdDeloc.pv2001_3500, field: 'pv2001_3500' },
+    { row: 50, label: 'au-delà 3500 m', margin: form.margesProdDeloc.pvAbove3500, field: 'pvAbove3500' },
   ];
 
   for (const pv of pvTiers) {
@@ -248,15 +264,20 @@ export function buildProdDelocSheet(ws: Worksheet, form: FormData) {
     ws.getCell(`D${pv.row}`).value = pv.margin;
     ws.getCell(`D${pv.row}`).font = FONT_DATA;
     ws.getCell(`D${pv.row}`).fill = YELLOW_FILL;
-    if (pv.row === 55) ws.getCell(`D${pv.row}`).numFmt = FMT_DECIMAL1;
-    ws.getCell(`E${pv.row}`).value = { formula: `E51*D${pv.row}` };
+    if (pv.row === 48) ws.getCell(`D${pv.row}`).numFmt = FMT_DECIMAL1;
+    ws.getCell(`E${pv.row}`).value = { formula: `E44*D${pv.row}` };
     ws.getCell(`E${pv.row}`).numFmt = FMT_EURO_ACCOUNTING;
-    ws.mergeCells(`F${pv.row}:H${pv.row}`);
+    ws.mergeCells(`F${pv.row}:G${pv.row}`);
     ws.getCell(`F${pv.row}`).numFmt = FMT_EURO_FR;
   }
 
+  // ROW 51: COMMENTAIRES
+  ws.getRow(51).height = 28.8;
+  ws.mergeCells('A51:G51');
+  ws.getCell('A51').value = 'COMMENTAIRES/INFORMATIONS:' + (form.commentaires.prodDeloc ? '\n' + form.commentaires.prodDeloc : ''); ws.getCell('A51').font = FONT_DATA_BOLD;
+
   // Apply borders
-  const dataRows = [9, 10, 13, 14, 15, 18, 19, 20, 26, 28, 33, 34, 35, 36, 37, 38, 44, 45, 48, 49, 54, 55, 56, 57];
+  const dataRows = [9, 10, 13, 14, 15, 18, 19, 20, 26, 27, 32, 33, 38, 39, 42, 43, 47, 48, 49, 50];
   for (const r of dataRows) {
     for (const c of ['A', 'B', 'C', 'D', 'E']) {
       const cell = ws.getCell(`${c}${r}`);

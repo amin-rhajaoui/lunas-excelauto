@@ -40,7 +40,8 @@ function NumInput({
           type="number"
           min={0}
           step={0.01}
-          value={value}
+          value={value || ''}
+          placeholder="0"
           onChange={e => onChange(parseFloat(e.target.value) || 0)}
           className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
         />
@@ -136,8 +137,6 @@ function PresseTab({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <NumInput label="Temps Collection" rate="30€/h" value={data.tempsCollection} onChange={v => set('tempsCollection', v)} />
-      <NumInput label="Temps Presse" rate="30€/h" value={data.tempsPresse} onChange={v => set('tempsPresse', v)} />
       <NumInput label="Cout atelier M2P PRESSE" rate="48€/h" value={data.coutAtelierPresse} onChange={v => set('coutAtelierPresse', v)} />
     </div>
   );
@@ -155,8 +154,6 @@ function ProdParisTab({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <NumInput label="Temps Collection" rate="30€/h" value={data.tempsCollection} onChange={v => set('tempsCollection', v)} />
-      <NumInput label="Temps Presse" rate="30€/h" value={data.tempsPresse} onChange={v => set('tempsPresse', v)} />
       <NumInput label="Cout atelier M2P Production/200M" rate="48€/h" value={data.coutAtelierProd200m} onChange={v => set('coutAtelierProd200m', v)} />
     </div>
   );
@@ -174,10 +171,6 @@ function ProdDelocTab({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <NumInput label="Temps Collection" rate="30€/h" value={data.tempsCollection} onChange={v => set('tempsCollection', v)} />
-      <NumInput label="Temps Presse" rate="30€/h" value={data.tempsPresse} onChange={v => set('tempsPresse', v)} />
-      <NumInput label="Cout atelier M2P Manip Textile" rate="48€/h" value={data.coutAtelierManipTextile} onChange={v => set('coutAtelierManipTextile', v)} />
-      <NumInput label="Cout atelier M2P Broderies" rate="58€/h" value={data.coutAtelierBroderies} onChange={v => set('coutAtelierBroderies', v)} />
       <NumInput label="Sous traitance Maroc" rate="7€/h" value={data.sousTraitanceMaroc} onChange={v => set('sousTraitanceMaroc', v)} />
       <NumInput label="Sous traitance Mada" rate="7.5€/h" value={data.sousTraitanceMada} onChange={v => set('sousTraitanceMada', v)} />
     </div>
