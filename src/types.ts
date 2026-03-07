@@ -36,12 +36,7 @@ export interface CoutsMatieresData {
 }
 
 export interface FabricationCollectionData {
-  tempsCollection: number;           // D34 (rate 30)
-  tempsPresse: number;               // D35 (rate 30, no formula)
-  coutAtelierManipTextile: number;   // D36 (rate 48, no formula)
-  coutAtelierBroderies: number;      // D37 (rate 58)
-  sousTraitanceMaroc: number;        // D38 (rate 7)
-  sousTraitanceMada: number;         // D39 (rate 7.5)
+  tempsCollection: number;           // D32 (rate 30)
 }
 
 export interface FabricationPresseData {

@@ -29,33 +29,41 @@ export default function CoutsMatiereForm({ data, onChange }: Props) {
         <label className="block text-sm font-semibold text-gray-700 mb-1.5">
           % alea (Collection / Presse / 200m)
         </label>
-        <input
-          type="number"
-          min={0}
-          max={1}
-          step={0.01}
-          value={data.aleaPercent || ''}
-          placeholder="0"
-          onChange={e => set('aleaPercent', parseFloat(e.target.value) || 0)}
-          className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-        />
-        <p className="text-xs text-gray-400 mt-1">Ex: 0.05 = 5%</p>
+        <div className="relative">
+          <input
+            type="number"
+            min={0}
+            max={100}
+            step={1}
+            value={data.aleaPercent || ''}
+            placeholder="0"
+            onChange={e => set('aleaPercent', parseFloat(e.target.value) || 0)}
+            className="w-full h-12 px-4 pr-10 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+          />
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">
+            %
+          </span>
+        </div>
       </div>
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-1.5">
           % matieres deloc (Prod deloc)
         </label>
-        <input
-          type="number"
-          min={0}
-          max={1}
-          step={0.01}
-          value={data.aleaPercentProdDeloc || ''}
-          placeholder="0"
-          onChange={e => set('aleaPercentProdDeloc', parseFloat(e.target.value) || 0)}
-          className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-        />
-        <p className="text-xs text-gray-400 mt-1">Ex: 0.10 = 10%</p>
+        <div className="relative">
+          <input
+            type="number"
+            min={0}
+            max={100}
+            step={1}
+            value={data.aleaPercentProdDeloc || ''}
+            placeholder="0"
+            onChange={e => set('aleaPercentProdDeloc', parseFloat(e.target.value) || 0)}
+            className="w-full h-12 px-4 pr-10 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+          />
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">
+            %
+          </span>
+        </div>
       </div>
     </div>
   );

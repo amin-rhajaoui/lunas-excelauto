@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react';
 import type { FraisEngagesData } from '../types';
+import { formatTime, parseTime } from '../utils';
 
 interface Props {
   data: FraisEngagesData;
@@ -43,6 +45,44 @@ function NumInput({
   );
 }
 
+function TimeInput({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  onChange: (v: number) => void;
+}) {
+  const [text, setText] = useState(() => formatTime(value));
+
+  useEffect(() => {
+    setText(formatTime(value));
+  }, [value]);
+
+  return (
+    <div>
+      <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+        {label}
+      </label>
+      <div className="relative">
+        <input
+          type="text"
+          value={text}
+          placeholder="0h00"
+          onChange={e => setText(e.target.value)}
+          onBlur={() => {
+            const parsed = parseTime(text);
+            onChange(parsed);
+            setText(formatTime(parsed));
+          }}
+          className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function FraisEngagesForm({ data, onChange }: Props) {
   const set = <K extends keyof FraisEngagesData>(key: K, value: number) =>
     onChange({ ...data, [key]: value });
@@ -55,17 +95,15 @@ export default function FraisEngagesForm({ data, onChange }: Props) {
           Frais Recherche & dessins
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <NumInput
+          <TimeInput
             label="Recherche, dev, echantillons (heures)"
             value={data.rechercheDevHeures}
             onChange={v => set('rechercheDevHeures', v)}
-            suffix="h"
           />
-          <NumInput
+          <TimeInput
             label="Creation dessin technique (heures)"
             value={data.creationDessinHeures}
             onChange={v => set('creationDessinHeures', v)}
-            suffix="h"
           />
         </div>
       </div>
@@ -100,11 +138,10 @@ export default function FraisEngagesForm({ data, onChange }: Props) {
             value={data.cadreSerigraphieQty}
             onChange={v => set('cadreSerigraphieQty', v)}
           />
-          <NumInput
+          <TimeInput
             label="Piquage (heures)"
             value={data.piquageHeures}
             onChange={v => set('piquageHeures', v)}
-            suffix="h"
           />
         </div>
       </div>
@@ -115,11 +152,10 @@ export default function FraisEngagesForm({ data, onChange }: Props) {
           Industrialisation & Qualite
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <NumInput
+          <TimeInput
             label="Etude industrialisation (heures)"
             value={data.etudeIndustrialisationHeures}
             onChange={v => set('etudeIndustrialisationHeures', v)}
-            suffix="h"
           />
           <NumInput
             label="Test PRSL - cout unitaire"
@@ -140,11 +176,10 @@ export default function FraisEngagesForm({ data, onChange }: Props) {
             step={0.01}
             suffix="€"
           />
-          <NumInput
+          <TimeInput
             label="Temps gradation (heures)"
             value={data.tempsGradationHeures}
             onChange={v => set('tempsGradationHeures', v)}
-            suffix="h"
           />
         </div>
       </div>

@@ -13,10 +13,17 @@ export const BRIGHT_YELLOW_FILL: Fill = {
   fgColor: { argb: 'FFFF00' },
 };
 
+// Section fills using theme colors from template
+export const SECTION1_FILL: Fill = {
+  type: 'pattern',
+  pattern: 'solid',
+  fgColor: { theme: 5, tint: 0.5999938962981048 } as any,
+};
+
 export const SECTION_FILL: Fill = {
   type: 'pattern',
   pattern: 'solid',
-  fgColor: { argb: 'D9E2F3' }, // light blue theme-like fill
+  fgColor: { theme: 3, tint: 0.5999938962981048 } as any,
 };
 
 export const PERIWINKLE_FILL: Fill = {
@@ -50,9 +57,11 @@ export const FONT_HEADER: Partial<Font> = {
 };
 
 export const FONT_WARNING: Partial<Font> = {
-  size: 11,
+  size: 22,
   bold: true,
-  color: { argb: 'FF0000' },
+  italic: true,
+  underline: true,
+  color: { argb: 'FFFF0000' },
 };
 
 export const FONT_TITLE: Partial<Font> = {
@@ -149,3 +158,70 @@ export const STYLE_COLUMN_HEADER: Partial<Style> = {
   border: BORDER_MEDIUM_ALL,
   alignment: ALIGN_CENTER,
 };
+
+// Rich text helpers for labels with red asterisk
+export function richTextLabel(prefix: string): { richText: Array<{ text: string; font?: Partial<Font> }> } {
+  return {
+    richText: [
+      { text: prefix },
+      {
+        text: '*',
+        font: { bold: true, size: 22, color: { argb: 'FFFF0000' } },
+      },
+      {
+        text: ' :',
+        font: { bold: true, size: 22 },
+      },
+    ],
+  };
+}
+
+// Page setup helper
+export function applyPageSetup(ws: import('exceljs').Worksheet, scale: number) {
+  ws.views = [{ state: 'normal' as const, zoomScale: 50, zoomScaleNormal: 50 }];
+  ws.pageSetup = {
+    fitToPage: true,
+    paperSize: 9,
+    orientation: 'portrait',
+    scale,
+    fitToWidth: 1,
+    fitToHeight: 1,
+    margins: {
+      left: 0.25,
+      right: 0.25,
+      top: 0.75,
+      bottom: 0.75,
+      header: 0.3,
+      footer: 0.3,
+    },
+  };
+}
+
+// Column default styles helper
+export function applyColumnDefaults(ws: import('exceljs').Worksheet, maxCol: string = 'H') {
+  // Col A: font size 22, align left/middle
+  const colA = ws.getColumn('A');
+  colA.font = { size: 22 };
+  colA.alignment = { horizontal: 'left', vertical: 'middle' };
+
+  // Col B/C/D: font size 11, align center
+  for (const c of ['B', 'C', 'D']) {
+    const col = ws.getColumn(c);
+    col.font = { size: 11 };
+    col.alignment = { horizontal: 'center' };
+  }
+
+  // Col E/F: font size 16, align center/middle
+  for (const c of ['E', 'F']) {
+    const col = ws.getColumn(c);
+    col.font = { size: 16 };
+    col.alignment = { horizontal: 'center', vertical: 'middle' };
+  }
+
+  // Col G: font size 11, align center/middle
+  if (maxCol >= 'G') {
+    const colG = ws.getColumn('G');
+    colG.font = { size: 11 };
+    colG.alignment = { horizontal: 'center', vertical: 'middle' };
+  }
+}

@@ -10,7 +10,7 @@ export const ACTIVITES: Record<ActiviteKey, number> = {
 // Fixed hourly rates (B column)
 export const RATE_BUREAU = 38;        // B9, B10, B15, B18
 export const RATE_COLLECTION = 30;    // Temps Collection
-export const RATE_PRESSE = 30;        // Temps Presse
+export const RATE_PRESSE = 48;        // Temps Presse
 export const RATE_M2P = 48;           // Cout atelier M2P
 export const RATE_BRODERIES = 58;     // Cout atelier M2P Broderies
 export const RATE_MAROC = 7;          // Sous traitance Maroc
@@ -22,8 +22,8 @@ export const TRANSPORT_CHA = 0.0833;
 
 // Default values
 export const DEFAULT_TEMPS_GRADATION_COUT = 35;
-export const DEFAULT_ALEA_PERCENT = 0.05;
-export const DEFAULT_ALEA_PERCENT_DELOC = 0.10;
+export const DEFAULT_ALEA_PERCENT = 5;
+export const DEFAULT_ALEA_PERCENT_DELOC = 10;
 
 // Sheet names (Presse has trailing space in template)
 export const SHEET_NAMES = {

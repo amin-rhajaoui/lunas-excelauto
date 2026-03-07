@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FABRICATION_TABS, type FabricationTabKey } from '../constants';
+import { formatTime, parseTime } from '../utils';
 import type {
   FabricationCollectionData,
   FabricationPresseData,
@@ -18,7 +19,7 @@ interface Props {
   onChangeProdDeloc: (d: FabricationProdDelocData) => void;
 }
 
-function NumInput({
+function TimeInput({
   label,
   rate,
   value,
@@ -29,6 +30,12 @@ function NumInput({
   value: number;
   onChange: (v: number) => void;
 }) {
+  const [text, setText] = useState(() => formatTime(value));
+
+  useEffect(() => {
+    setText(formatTime(value));
+  }, [value]);
+
   return (
     <div>
       <label className="block text-sm font-semibold text-gray-700 mb-1.5">
@@ -37,15 +44,17 @@ function NumInput({
       </label>
       <div className="relative">
         <input
-          type="number"
-          min={0}
-          step={0.01}
-          value={value || ''}
-          placeholder="0"
-          onChange={e => onChange(parseFloat(e.target.value) || 0)}
+          type="text"
+          value={text}
+          placeholder="0h00"
+          onChange={e => setText(e.target.value)}
+          onBlur={() => {
+            const parsed = parseTime(text);
+            onChange(parsed);
+            setText(formatTime(parsed));
+          }}
           className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
         />
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">h</span>
       </div>
     </div>
   );
@@ -110,17 +119,9 @@ function CollectionTab({
   data: FabricationCollectionData;
   onChange: (d: FabricationCollectionData) => void;
 }) {
-  const set = <K extends keyof FabricationCollectionData>(k: K, v: number) =>
-    onChange({ ...data, [k]: v });
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <NumInput label="Temps Collection" rate="30€/h" value={data.tempsCollection} onChange={v => set('tempsCollection', v)} />
-      <NumInput label="Temps Presse" rate="30€/h" value={data.tempsPresse} onChange={v => set('tempsPresse', v)} />
-      <NumInput label="Cout atelier M2P Manip Textile" rate="48€/h" value={data.coutAtelierManipTextile} onChange={v => set('coutAtelierManipTextile', v)} />
-      <NumInput label="Cout atelier M2P Broderies" rate="58€/h" value={data.coutAtelierBroderies} onChange={v => set('coutAtelierBroderies', v)} />
-      <NumInput label="Sous traitance Maroc" rate="7€/h" value={data.sousTraitanceMaroc} onChange={v => set('sousTraitanceMaroc', v)} />
-      <NumInput label="Sous traitance Mada" rate="7.5€/h" value={data.sousTraitanceMada} onChange={v => set('sousTraitanceMada', v)} />
+      <TimeInput label="Temps Collection" rate="30€/h" value={data.tempsCollection} onChange={v => onChange({ ...data, tempsCollection: v })} />
     </div>
   );
 }
@@ -137,7 +138,7 @@ function PresseTab({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <NumInput label="Cout atelier M2P PRESSE" rate="48€/h" value={data.coutAtelierPresse} onChange={v => set('coutAtelierPresse', v)} />
+      <TimeInput label="Cout atelier M2P PRESSE" rate="48€/h" value={data.coutAtelierPresse} onChange={v => set('coutAtelierPresse', v)} />
     </div>
   );
 }
@@ -154,7 +155,7 @@ function ProdParisTab({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <NumInput label="Cout atelier M2P Production/200M" rate="48€/h" value={data.coutAtelierProd200m} onChange={v => set('coutAtelierProd200m', v)} />
+      <TimeInput label="Cout atelier M2P Production/200M" rate="48€/h" value={data.coutAtelierProd200m} onChange={v => set('coutAtelierProd200m', v)} />
     </div>
   );
 }
@@ -171,8 +172,8 @@ function ProdDelocTab({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <NumInput label="Sous traitance Maroc" rate="7€/h" value={data.sousTraitanceMaroc} onChange={v => set('sousTraitanceMaroc', v)} />
-      <NumInput label="Sous traitance Mada" rate="7.5€/h" value={data.sousTraitanceMada} onChange={v => set('sousTraitanceMada', v)} />
+      <TimeInput label="Sous traitance Maroc" rate="7€/h" value={data.sousTraitanceMaroc} onChange={v => set('sousTraitanceMaroc', v)} />
+      <TimeInput label="Sous traitance Mada" rate="7.5€/h" value={data.sousTraitanceMada} onChange={v => set('sousTraitanceMada', v)} />
     </div>
   );
 }
