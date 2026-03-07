@@ -236,6 +236,12 @@ export function buildPresseSheet(ws: Worksheet, form: FormData) {
   ws.getCell('D47').value = form.margesPresse.pvPresse; ws.getCell('D47').fill = YELLOW_FILL; ws.getCell('D47').font = FONT_DATA;
   ws.getCell('E47').value = { formula: 'E44*D47' }; ws.getCell('E47').numFmt = FMT_EURO_ACCOUNTING; ws.getCell('E47').font = FONT_DATA_BOLD;
   ws.mergeCells('F47:H47');
+  if (form.margesPresse.prixVenteAnnonce) {
+    ws.getCell('F47').value = form.margesPresse.prixVenteAnnonce;
+    ws.getCell('F47').numFmt = FMT_EURO;
+    ws.getCell('F47').font = { size: 22, bold: true, color: { argb: 'FFFF0000' } };
+    ws.getCell('F47').fill = BRIGHT_YELLOW_FILL;
+  }
 
   // ROW 48: COMMENTAIRES
   ws.mergeCells('A48:H48');

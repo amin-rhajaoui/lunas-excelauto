@@ -1,3 +1,5 @@
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import type {
   MargesCollectionData,
   MargesPresseData,
@@ -26,18 +28,15 @@ function NumInput({
   onChange: (v: number) => void;
 }) {
   return (
-    <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-        {label}
-      </label>
-      <input
+    <div className="space-y-2">
+      <Label>{label}</Label>
+      <Input
         type="number"
         min={0}
         step={0.01}
         value={value || ''}
         placeholder="0"
         onChange={e => onChange(parseFloat(e.target.value) || 0)}
-        className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
       />
     </div>
   );
@@ -48,7 +47,7 @@ export default function MargesForm(props: Props) {
     <div className="space-y-6">
       {/* Collection */}
       <div>
-        <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-3">
+        <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wide mb-3">
           Collection
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -67,40 +66,55 @@ export default function MargesForm(props: Props) {
             value={props.collection.pvFraisTechnique}
             onChange={v => props.onChangeCollection({ ...props.collection, pvFraisTechnique: v })}
           />
+          <NumInput
+            label="Prix de vente annonce"
+            value={props.collection.prixVenteAnnonce}
+            onChange={v => props.onChangeCollection({ ...props.collection, prixVenteAnnonce: v })}
+          />
         </div>
       </div>
 
       {/* Presse */}
       <div>
-        <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-3">
+        <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wide mb-3">
           Presse
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <NumInput
             label="PV Presse (marge)"
             value={props.presse.pvPresse}
-            onChange={v => props.onChangePresse({ pvPresse: v })}
+            onChange={v => props.onChangePresse({ ...props.presse, pvPresse: v })}
+          />
+          <NumInput
+            label="Prix de vente annonce"
+            value={props.presse.prixVenteAnnonce}
+            onChange={v => props.onChangePresse({ ...props.presse, prixVenteAnnonce: v })}
           />
         </div>
       </div>
 
       {/* 200m / Prod Paris */}
       <div>
-        <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-3">
+        <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wide mb-3">
           200m / Prod Paris
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <NumInput
             label="PV Prod Paris / 200m (marge)"
             value={props.prodParis.pvProdParis}
-            onChange={v => props.onChangeProdParis({ pvProdParis: v })}
+            onChange={v => props.onChangeProdParis({ ...props.prodParis, pvProdParis: v })}
+          />
+          <NumInput
+            label="Prix de vente annonce"
+            value={props.prodParis.prixVenteAnnonce}
+            onChange={v => props.onChangeProdParis({ ...props.prodParis, prixVenteAnnonce: v })}
           />
         </div>
       </div>
 
       {/* Prod deloc */}
       <div>
-        <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-3">
+        <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wide mb-3">
           Prod deloc (par tranche)
         </h4>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -123,6 +137,26 @@ export default function MargesForm(props: Props) {
             label="> 3500m"
             value={props.prodDeloc.pvAbove3500}
             onChange={v => props.onChangeProdDeloc({ ...props.prodDeloc, pvAbove3500: v })}
+          />
+          <NumInput
+            label="PV annonce 200/500m"
+            value={props.prodDeloc.prixVenteAnnonce200_500}
+            onChange={v => props.onChangeProdDeloc({ ...props.prodDeloc, prixVenteAnnonce200_500: v })}
+          />
+          <NumInput
+            label="PV annonce 501/2000m"
+            value={props.prodDeloc.prixVenteAnnonce501_2000}
+            onChange={v => props.onChangeProdDeloc({ ...props.prodDeloc, prixVenteAnnonce501_2000: v })}
+          />
+          <NumInput
+            label="PV annonce 2001/3500m"
+            value={props.prodDeloc.prixVenteAnnonce2001_3500}
+            onChange={v => props.onChangeProdDeloc({ ...props.prodDeloc, prixVenteAnnonce2001_3500: v })}
+          />
+          <NumInput
+            label="PV annonce > 3500m"
+            value={props.prodDeloc.prixVenteAnnonceAbove3500}
+            onChange={v => props.onChangeProdDeloc({ ...props.prodDeloc, prixVenteAnnonceAbove3500: v })}
           />
         </div>
       </div>

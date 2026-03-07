@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { FileSpreadsheet } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Label } from '@/components/ui/label';
 import HeaderForm from './components/HeaderForm';
 import FraisEngagesForm from './components/FraisEngagesForm';
 import CoutsMatiereForm from './components/CoutsMatiereForm';
@@ -7,6 +9,7 @@ import FabricationTabs from './components/FabricationTabs';
 import ActiviteSelect from './components/ActiviteSelect';
 import MargesForm from './components/MargesForm';
 import GenerateButton from './components/GenerateButton';
+import LivePreview from './components/LivePreview';
 import { generateExcel } from './services/excelGenerator';
 import {
   DEFAULT_TEMPS_GRADATION_COUT,
@@ -55,14 +58,19 @@ const initialFormData: FormData = {
     pvCollection: 2.5,
     pvFraisDessins: 3,
     pvFraisTechnique: 2,
+    prixVenteAnnonce: 0,
   },
-  margesPresse: { pvPresse: 1.75 },
-  margesProdParis: { pvProdParis: 1.3 },
+  margesPresse: { pvPresse: 1.75, prixVenteAnnonce: 0 },
+  margesProdParis: { pvProdParis: 1.3, prixVenteAnnonce: 0 },
   margesProdDeloc: {
     pv200_500: 2.5,
     pv501_2000: 1.9,
     pv2001_3500: 1.75,
     pvAbove3500: 1.55,
+    prixVenteAnnonce200_500: 0,
+    prixVenteAnnonce501_2000: 0,
+    prixVenteAnnonce2001_3500: 0,
+    prixVenteAnnonceAbove3500: 0,
   },
   commentaires: {
     collection: '',
@@ -73,19 +81,19 @@ const initialFormData: FormData = {
 };
 
 const SECTIONS = [
-  { id: 'en-tete', title: 'En-tête' },
-  { id: 'frais-engages', title: 'Frais engagés' },
-  { id: 'couts-matieres', title: 'Coûts matières' },
+  { id: 'en-tete', title: 'En-tete' },
+  { id: 'frais-engages', title: 'Frais engages' },
+  { id: 'couts-matieres', title: 'Couts matieres' },
   { id: 'fabrication', title: 'Fabrication' },
-  { id: 'activite', title: 'Activité' },
+  { id: 'activite', title: 'Activite' },
   { id: 'marges', title: 'Marges' },
-  { id: 'commentaires-generation', title: 'Commentaires & Génération' },
+  { id: 'commentaires-generation', title: 'Commentaires & Generation' },
 ] as const;
 
 function SectionTitle({ index, title }: { index: number; title: string }) {
   return (
-    <h3 className="text-lg font-bold text-gray-800 mb-5 flex items-center gap-3 pt-2 first:pt-0">
-      <span className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-700 text-sm font-bold shrink-0">
+    <h3 className="text-lg font-bold mb-5 flex items-center gap-3 pt-2 first:pt-0">
+      <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary text-sm font-bold shrink-0">
         {index}
       </span>
       {title}
@@ -116,27 +124,26 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-gradient-to-r from-blue-800 to-violet-700 text-white py-8 px-6 shadow-lg">
-        <div className="max-w-4xl mx-auto flex items-center gap-4">
-          <FileSpreadsheet className="w-10 h-10 opacity-90" />
+      <header className="bg-white border-b py-5 px-6 shadow-sm">
+        <div className="max-w-7xl mx-auto flex items-center gap-4">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-gray-900">
               Generateur Excel Tarification
             </h1>
-            <p className="text-blue-200 text-sm mt-1">
-              Lunas / CHA — Generation automatique du fichier de tarification
+            <p className="text-gray-500 text-sm mt-0.5">
+              Generation automatique du fichier de tarification
             </p>
           </div>
         </div>
       </header>
 
-      {/* Form — une seule page avec sections */}
-      <main className="max-w-4xl mx-auto px-4 md:px-6 py-8 pb-12">
-        <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 space-y-10">
-          {/* 1. En-tête */}
-          <div id={SECTIONS[0].id} className="border-b border-gray-100 pb-8 last:border-0 last:pb-0">
+      {/* Two-column layout */}
+      <main className="max-w-7xl mx-auto px-4 md:px-6 py-8 pb-12 flex gap-6">
+        <Card className="p-6 md:p-8 space-y-10 flex-1 min-w-0">
+          {/* 1. En-tete */}
+          <div id={SECTIONS[0].id}>
             <SectionTitle index={1} title={SECTIONS[0].title} />
             <HeaderForm
               data={form.header}
@@ -144,8 +151,10 @@ export default function App() {
             />
           </div>
 
-          {/* 2. Frais engagés */}
-          <div id={SECTIONS[1].id} className="border-b border-gray-100 pb-8 last:border-0 last:pb-0">
+          <Separator />
+
+          {/* 2. Frais engages */}
+          <div id={SECTIONS[1].id}>
             <SectionTitle index={2} title={SECTIONS[1].title} />
             <FraisEngagesForm
               data={form.fraisEngages}
@@ -153,8 +162,10 @@ export default function App() {
             />
           </div>
 
-          {/* 3. Coûts matières */}
-          <div id={SECTIONS[2].id} className="border-b border-gray-100 pb-8 last:border-0 last:pb-0">
+          <Separator />
+
+          {/* 3. Couts matieres */}
+          <div id={SECTIONS[2].id}>
             <SectionTitle index={3} title={SECTIONS[2].title} />
             <CoutsMatiereForm
               data={form.coutsMatieres}
@@ -162,8 +173,10 @@ export default function App() {
             />
           </div>
 
+          <Separator />
+
           {/* 4. Fabrication */}
-          <div id={SECTIONS[3].id} className="border-b border-gray-100 pb-8 last:border-0 last:pb-0">
+          <div id={SECTIONS[3].id}>
             <SectionTitle index={4} title={SECTIONS[3].title} />
             <FabricationTabs
               collection={form.fabricationCollection}
@@ -185,8 +198,10 @@ export default function App() {
             />
           </div>
 
-          {/* 5. Activité */}
-          <div id={SECTIONS[4].id} className="border-b border-gray-100 pb-8 last:border-0 last:pb-0">
+          <Separator />
+
+          {/* 5. Activite */}
+          <div id={SECTIONS[4].id}>
             <SectionTitle index={5} title={SECTIONS[4].title} />
             <ActiviteSelect
               value={form.activite}
@@ -194,8 +209,10 @@ export default function App() {
             />
           </div>
 
+          <Separator />
+
           {/* 6. Marges */}
-          <div id={SECTIONS[5].id} className="border-b border-gray-100 pb-8 last:border-0 last:pb-0">
+          <div id={SECTIONS[5].id}>
             <SectionTitle index={6} title={SECTIONS[5].title} />
             <MargesForm
               collection={form.margesCollection}
@@ -217,10 +234,12 @@ export default function App() {
             />
           </div>
 
-          {/* 7. Commentaires & Génération */}
+          <Separator />
+
+          {/* 7. Commentaires & Generation */}
           <div id={SECTIONS[6].id}>
             <SectionTitle index={7} title={SECTIONS[6].title} />
-            <p className="text-gray-600 text-sm mb-4">
+            <p className="text-muted-foreground text-sm mb-4">
               Verifiez vos informations puis cliquez sur le bouton ci-dessous pour generer votre fichier Excel.
             </p>
             <div className="max-w-2xl space-y-4 mb-6">
@@ -230,13 +249,11 @@ export default function App() {
                 { key: 'prodParis' as const, label: 'Prod Paris' },
                 { key: 'prodDeloc' as const, label: 'Prod Deloc' },
               ] as const).map(({ key, label }) => (
-                <div key={key}>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Commentaires — {label}
-                  </label>
+                <div key={key} className="space-y-2">
+                  <Label>Commentaires — {label}</Label>
                   <textarea
                     rows={2}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     placeholder={`Commentaires pour la feuille ${label}...`}
                     value={form.commentaires[key]}
                     onChange={e =>
@@ -255,12 +272,19 @@ export default function App() {
               disabled={!isValid}
             />
             {!isValid && (
-              <p className="text-sm text-red-500 mt-3">
-                Veuillez remplir les champs obligatoires (Client, Projet, Date) dans l'en-tête.
+              <p className="text-sm text-destructive mt-3">
+                Veuillez remplir les champs obligatoires (Client, Projet, Date) dans l'en-tete.
               </p>
             )}
           </div>
-        </section>
+        </Card>
+
+        {/* Sticky preview sidebar (hidden on mobile) */}
+        <aside className="hidden lg:block w-80 shrink-0">
+          <div className="sticky top-6">
+            <LivePreview form={form} />
+          </div>
+        </aside>
       </main>
     </div>
   );

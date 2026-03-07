@@ -1,4 +1,13 @@
 import { Calendar, Building2, User, FolderOpen, Layers } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import type { HeaderData, Societe } from '../types';
 
 interface Props {
@@ -12,76 +21,73 @@ export default function HeaderForm({ data, onChange }: Props) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+      <div className="space-y-2">
+        <Label>
           <User className="inline w-4 h-4 mr-1.5 -mt-0.5" />
           Client *
-        </label>
-        <input
+        </Label>
+        <Input
           type="text"
           required
           value={data.client}
           onChange={e => set('client', e.target.value)}
-          placeholder="ex: CHANEL"
-          className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+          placeholder="Nom du client"
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+      <div className="space-y-2">
+        <Label>
           <Building2 className="inline w-4 h-4 mr-1.5 -mt-0.5" />
           Societe *
-        </label>
-        <select
-          value={data.societe}
-          onChange={e => set('societe', e.target.value as Societe)}
-          className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-        >
-          <option value="LUNAS">LUNAS</option>
-          <option value="CHA">CHA</option>
-        </select>
+        </Label>
+        <Select value={data.societe} onValueChange={v => set('societe', v as Societe)}>
+          <SelectTrigger className="h-10">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="LUNAS">LUNAS</SelectItem>
+            <SelectItem value="CHA">CHA</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+      <div className="space-y-2">
+        <Label>
           <Layers className="inline w-4 h-4 mr-1.5 -mt-0.5" />
           Collection
-        </label>
-        <input
+        </Label>
+        <Input
           type="text"
           value={data.collection}
           onChange={e => set('collection', e.target.value)}
-          placeholder="ex: 26K"
-          className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+          placeholder="Nom de la collection"
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+      <div className="space-y-2">
+        <Label>
           <FolderOpen className="inline w-4 h-4 mr-1.5 -mt-0.5" />
           Projet / Reference *
-        </label>
-        <input
+        </Label>
+        <Input
           type="text"
           required
           value={data.projet}
           onChange={e => set('projet', e.target.value)}
-          placeholder="ex: LF3635"
-          className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+          placeholder="Reference du projet"
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+      <div className="space-y-2">
+        <Label>
           <Calendar className="inline w-4 h-4 mr-1.5 -mt-0.5" />
           Date *
-        </label>
-        <input
+        </Label>
+        <Input
           type="date"
           required
           value={data.date}
           onChange={e => set('date', e.target.value)}
-          className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
         />
       </div>
     </div>

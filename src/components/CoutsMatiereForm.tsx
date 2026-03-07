@@ -1,3 +1,5 @@
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import type { CoutsMatieresData } from '../types';
 
 interface Props {
@@ -11,26 +13,21 @@ export default function CoutsMatiereForm({ data, onChange }: Props) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-          Cout matieres du galon (€/m)
-        </label>
-        <input
+      <div className="space-y-2">
+        <Label>Cout matieres du galon (€/m)</Label>
+        <Input
           type="number"
           min={0}
           step={0.01}
           value={data.coutMatieresGalon || ''}
           placeholder="0"
           onChange={e => set('coutMatieresGalon', parseFloat(e.target.value) || 0)}
-          className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
         />
       </div>
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-          % alea (Collection / Presse / 200m)
-        </label>
+      <div className="space-y-2">
+        <Label>% alea (Collection / Presse / 200m)</Label>
         <div className="relative">
-          <input
+          <Input
             type="number"
             min={0}
             max={100}
@@ -38,19 +35,17 @@ export default function CoutsMatiereForm({ data, onChange }: Props) {
             value={data.aleaPercent || ''}
             placeholder="0"
             onChange={e => set('aleaPercent', parseFloat(e.target.value) || 0)}
-            className="w-full h-12 px-4 pr-10 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+            className="pr-10"
           />
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none">
             %
           </span>
         </div>
       </div>
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-          % matieres deloc (Prod deloc)
-        </label>
+      <div className="space-y-2">
+        <Label>% matieres deloc (Prod deloc)</Label>
         <div className="relative">
-          <input
+          <Input
             type="number"
             min={0}
             max={100}
@@ -58,9 +53,9 @@ export default function CoutsMatiereForm({ data, onChange }: Props) {
             value={data.aleaPercentProdDeloc || ''}
             placeholder="0"
             onChange={e => set('aleaPercentProdDeloc', parseFloat(e.target.value) || 0)}
-            className="w-full h-12 px-4 pr-10 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+            className="pr-10"
           />
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none">
             %
           </span>
         </div>

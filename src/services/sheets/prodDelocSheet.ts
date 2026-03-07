@@ -262,6 +262,22 @@ export function buildProdDelocSheet(ws: Worksheet, form: FormData) {
     ws.getCell(`F${pv.row}`).numFmt = FMT_EURO_FR;
   }
 
+  // Prix de vente annoncé (red font + yellow fill)
+  const pvAnnonce: Array<{ row: number; value: number }> = [
+    { row: 47, value: form.margesProdDeloc.prixVenteAnnonce200_500 },
+    { row: 48, value: form.margesProdDeloc.prixVenteAnnonce501_2000 },
+    { row: 49, value: form.margesProdDeloc.prixVenteAnnonce2001_3500 },
+    { row: 50, value: form.margesProdDeloc.prixVenteAnnonceAbove3500 },
+  ];
+  for (const pva of pvAnnonce) {
+    if (pva.value) {
+      ws.getCell(`F${pva.row}`).value = pva.value;
+      ws.getCell(`F${pva.row}`).numFmt = FMT_EURO;
+      ws.getCell(`F${pva.row}`).font = { size: 22, bold: true, color: { argb: 'FFFF0000' } };
+      ws.getCell(`F${pva.row}`).fill = BRIGHT_YELLOW_FILL;
+    }
+  }
+
   // ROW 51: COMMENTAIRES
   ws.mergeCells('A51:G51');
   ws.getCell('A51').value = 'COMMENTAIRES/INFORMATIONS:' + (form.commentaires.prodDeloc ? '\n' + form.commentaires.prodDeloc : ''); ws.getCell('A51').font = FONT_DATA_BOLD;

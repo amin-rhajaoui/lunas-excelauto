@@ -56,14 +56,17 @@ export interface MargesCollectionData {
   pvCollection: number;  // D55, default 2.5
   pvFraisDessins: number; // D56, default 3
   pvFraisTechnique: number; // D57, default 2
+  prixVenteAnnonce: number; // F47
 }
 
 export interface MargesPresseData {
   pvPresse: number; // D51, default 1.75
+  prixVenteAnnonce: number; // F47
 }
 
 export interface MargesProdParisData {
   pvProdParis: number; // D52, default 1.3
+  prixVenteAnnonce: number; // F47
 }
 
 export interface MargesProdDelocData {
@@ -71,6 +74,10 @@ export interface MargesProdDelocData {
   pv501_2000: number;   // D55, default 1.9
   pv2001_3500: number;  // D56, default 1.75
   pvAbove3500: number;  // D57, default 1.55
+  prixVenteAnnonce200_500: number;   // F47
+  prixVenteAnnonce501_2000: number;  // F48
+  prixVenteAnnonce2001_3500: number; // F49
+  prixVenteAnnonceAbove3500: number; // F50
 }
 
 export interface CommentairesData {

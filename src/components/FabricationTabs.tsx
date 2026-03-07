@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import { FABRICATION_TABS, type FabricationTabKey } from '../constants';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { formatTime, parseTime } from '../utils';
 import type {
   FabricationCollectionData,
@@ -37,143 +39,60 @@ function TimeInput({
   }, [value]);
 
   return (
-    <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+    <div className="space-y-2">
+      <Label>
         {label}
-        <span className="ml-2 text-xs font-normal text-gray-400">({rate})</span>
-      </label>
-      <div className="relative">
-        <input
-          type="text"
-          value={text}
-          placeholder="0h00"
-          onChange={e => setText(e.target.value)}
-          onBlur={() => {
-            const parsed = parseTime(text);
-            onChange(parsed);
-            setText(formatTime(parsed));
-          }}
-          className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-        />
-      </div>
+        <span className="ml-2 text-xs font-normal text-muted-foreground">({rate})</span>
+      </Label>
+      <Input
+        type="text"
+        value={text}
+        placeholder="0h00"
+        onChange={e => setText(e.target.value)}
+        onBlur={() => {
+          const parsed = parseTime(text);
+          onChange(parsed);
+          setText(formatTime(parsed));
+        }}
+      />
     </div>
   );
 }
 
 export default function FabricationTabs(props: Props) {
-  const [tab, setTab] = useState<FabricationTabKey>('collection');
-
   return (
-    <div>
-      {/* Tabs */}
-      <div className="flex border-b border-gray-200 mb-6">
-        {FABRICATION_TABS.map(t => (
-          <button
-            key={t.key}
-            type="button"
-            onClick={() => setTab(t.key)}
-            className={`px-5 py-3 text-sm font-semibold transition-colors relative ${
-              tab === t.key
-                ? 'text-blue-600'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            {t.label}
-            {tab === t.key && (
-              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-t" />
-            )}
-          </button>
-        ))}
-      </div>
+    <Tabs defaultValue="collection">
+      <TabsList className="mb-4">
+        <TabsTrigger value="collection">Collection</TabsTrigger>
+        <TabsTrigger value="presse">Presse</TabsTrigger>
+        <TabsTrigger value="prodParis">200m / Prod Paris</TabsTrigger>
+        <TabsTrigger value="prodDeloc">Prod deloc</TabsTrigger>
+      </TabsList>
 
-      {/* Tab content */}
-      {tab === 'collection' && (
-        <CollectionTab
-          data={props.collection}
-          onChange={props.onChangeCollection}
-        />
-      )}
-      {tab === 'presse' && (
-        <PresseTab data={props.presse} onChange={props.onChangePresse} />
-      )}
-      {tab === 'prodParis' && (
-        <ProdParisTab
-          data={props.prodParis}
-          onChange={props.onChangeProdParis}
-        />
-      )}
-      {tab === 'prodDeloc' && (
-        <ProdDelocTab
-          data={props.prodDeloc}
-          onChange={props.onChangeProdDeloc}
-        />
-      )}
-    </div>
-  );
-}
+      <TabsContent value="collection">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <TimeInput label="Temps Collection" rate="30€/h" value={props.collection.tempsCollection} onChange={v => props.onChangeCollection({ ...props.collection, tempsCollection: v })} />
+        </div>
+      </TabsContent>
 
-function CollectionTab({
-  data,
-  onChange,
-}: {
-  data: FabricationCollectionData;
-  onChange: (d: FabricationCollectionData) => void;
-}) {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <TimeInput label="Temps Collection" rate="30€/h" value={data.tempsCollection} onChange={v => onChange({ ...data, tempsCollection: v })} />
-    </div>
-  );
-}
+      <TabsContent value="presse">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <TimeInput label="Cout atelier M2P PRESSE" rate="48€/h" value={props.presse.coutAtelierPresse} onChange={v => props.onChangePresse({ coutAtelierPresse: v })} />
+        </div>
+      </TabsContent>
 
-function PresseTab({
-  data,
-  onChange,
-}: {
-  data: FabricationPresseData;
-  onChange: (d: FabricationPresseData) => void;
-}) {
-  const set = <K extends keyof FabricationPresseData>(k: K, v: number) =>
-    onChange({ ...data, [k]: v });
+      <TabsContent value="prodParis">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <TimeInput label="Cout atelier M2P Production/200M" rate="48€/h" value={props.prodParis.coutAtelierProd200m} onChange={v => props.onChangeProdParis({ coutAtelierProd200m: v })} />
+        </div>
+      </TabsContent>
 
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <TimeInput label="Cout atelier M2P PRESSE" rate="48€/h" value={data.coutAtelierPresse} onChange={v => set('coutAtelierPresse', v)} />
-    </div>
-  );
-}
-
-function ProdParisTab({
-  data,
-  onChange,
-}: {
-  data: FabricationProdParisData;
-  onChange: (d: FabricationProdParisData) => void;
-}) {
-  const set = <K extends keyof FabricationProdParisData>(k: K, v: number) =>
-    onChange({ ...data, [k]: v });
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <TimeInput label="Cout atelier M2P Production/200M" rate="48€/h" value={data.coutAtelierProd200m} onChange={v => set('coutAtelierProd200m', v)} />
-    </div>
-  );
-}
-
-function ProdDelocTab({
-  data,
-  onChange,
-}: {
-  data: FabricationProdDelocData;
-  onChange: (d: FabricationProdDelocData) => void;
-}) {
-  const set = <K extends keyof FabricationProdDelocData>(k: K, v: number) =>
-    onChange({ ...data, [k]: v });
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <TimeInput label="Sous traitance Maroc" rate="7€/h" value={data.sousTraitanceMaroc} onChange={v => set('sousTraitanceMaroc', v)} />
-      <TimeInput label="Sous traitance Mada" rate="7.5€/h" value={data.sousTraitanceMada} onChange={v => set('sousTraitanceMada', v)} />
-    </div>
+      <TabsContent value="prodDeloc">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <TimeInput label="Sous traitance Maroc" rate="7€/h" value={props.prodDeloc.sousTraitanceMaroc} onChange={v => props.onChangeProdDeloc({ ...props.prodDeloc, sousTraitanceMaroc: v })} />
+          <TimeInput label="Sous traitance Mada" rate="7.5€/h" value={props.prodDeloc.sousTraitanceMada} onChange={v => props.onChangeProdDeloc({ ...props.prodDeloc, sousTraitanceMada: v })} />
+        </div>
+      </TabsContent>
+    </Tabs>
   );
 }

@@ -523,6 +523,12 @@ export function buildCollectionSheet(ws: Worksheet, form: FormData) {
   ws.getCell('E47').numFmt = FMT_EURO_ACCOUNTING;
   ws.getCell('E47').font = FONT_DATA_BOLD;
   ws.mergeCells('F47:H47');
+  if (form.margesCollection.prixVenteAnnonce) {
+    ws.getCell('F47').value = form.margesCollection.prixVenteAnnonce;
+    ws.getCell('F47').numFmt = FMT_EURO;
+    ws.getCell('F47').font = { size: 22, bold: true, color: { argb: 'FFFF0000' } };
+    ws.getCell('F47').fill = BRIGHT_YELLOW_FILL;
+  }
 
   // ROW 48: PV Frais dessins (merged B48:C48, F48:H48)
   ws.getRow(48).height = 47.4;
