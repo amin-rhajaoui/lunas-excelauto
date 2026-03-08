@@ -1,5 +1,6 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { SHEET_COLORS } from '../lib/sheetColors';
 import type {
   MargesCollectionData,
   MargesPresseData,
@@ -42,14 +43,34 @@ function NumInput({
   );
 }
 
+function SectionCard({
+  colorKey,
+  title,
+  children,
+}: {
+  colorKey: keyof typeof SHEET_COLORS;
+  title: string;
+  children: React.ReactNode;
+}) {
+  const c = SHEET_COLORS[colorKey];
+  return (
+    <div className={`rounded-lg border-l-4 ${c.borderAccent} ${c.border} ${c.bgSubtle} p-4`}>
+      <div className="flex items-center gap-2 mb-3">
+        <span className={`h-2.5 w-2.5 rounded-full ${c.dot}`} />
+        <h4 className={`text-sm font-bold uppercase tracking-wide ${c.textHeading}`}>
+          {title}
+        </h4>
+      </div>
+      {children}
+    </div>
+  );
+}
+
 export default function MargesForm(props: Props) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Collection */}
-      <div>
-        <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wide mb-3">
-          Collection
-        </h4>
+      <SectionCard colorKey="collection" title="Collection">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <NumInput
             label="PV Collection (marge)"
@@ -72,13 +93,10 @@ export default function MargesForm(props: Props) {
             onChange={v => props.onChangeCollection({ ...props.collection, prixVenteAnnonce: v })}
           />
         </div>
-      </div>
+      </SectionCard>
 
       {/* Presse */}
-      <div>
-        <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wide mb-3">
-          Presse
-        </h4>
+      <SectionCard colorKey="presse" title="Presse">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <NumInput
             label="PV Presse (marge)"
@@ -91,13 +109,10 @@ export default function MargesForm(props: Props) {
             onChange={v => props.onChangePresse({ ...props.presse, prixVenteAnnonce: v })}
           />
         </div>
-      </div>
+      </SectionCard>
 
       {/* 200m / Prod Paris */}
-      <div>
-        <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wide mb-3">
-          200m / Prod Paris
-        </h4>
+      <SectionCard colorKey="prodParis" title="200m / Prod Paris">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <NumInput
             label="PV Prod Paris / 200m (marge)"
@@ -110,13 +125,10 @@ export default function MargesForm(props: Props) {
             onChange={v => props.onChangeProdParis({ ...props.prodParis, prixVenteAnnonce: v })}
           />
         </div>
-      </div>
+      </SectionCard>
 
       {/* Prod deloc */}
-      <div>
-        <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wide mb-3">
-          Prod deloc (par tranche)
-        </h4>
+      <SectionCard colorKey="prodDeloc" title="Prod deloc (par tranche)">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <NumInput
             label="200/500m"
@@ -159,7 +171,7 @@ export default function MargesForm(props: Props) {
             onChange={v => props.onChangeProdDeloc({ ...props.prodDeloc, prixVenteAnnonceAbove3500: v })}
           />
         </div>
-      </div>
+      </SectionCard>
     </div>
   );
 }

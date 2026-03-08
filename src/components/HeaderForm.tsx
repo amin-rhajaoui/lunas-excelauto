@@ -1,6 +1,7 @@
 import { Calendar, Building2, User, FolderOpen, Layers } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Combobox } from '@/components/ui/combobox';
 import {
   Select,
   SelectContent,
@@ -13,11 +14,21 @@ import type { HeaderData, Societe } from '../types';
 interface Props {
   data: HeaderData;
   onChange: (data: HeaderData) => void;
+  clientOptions?: string[];
+  projetOptions?: string[];
+  /** When true, show inline errors for required fields (Client, Projet, Date). */
+  showValidationErrors?: boolean;
 }
 
-export default function HeaderForm({ data, onChange }: Props) {
+const requiredError = 'Champ obligatoire';
+
+export default function HeaderForm({ data, onChange, clientOptions = [], projetOptions = [], showValidationErrors }: Props) {
   const set = <K extends keyof HeaderData>(key: K, value: HeaderData[K]) =>
     onChange({ ...data, [key]: value });
+
+  const clientError = showValidationErrors && !data.client.trim();
+  const projetError = showValidationErrors && !data.projet.trim();
+  const dateError = showValidationErrors && !data.date.trim();
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -26,19 +37,24 @@ export default function HeaderForm({ data, onChange }: Props) {
           <User className="inline w-4 h-4 mr-1.5 -mt-0.5" />
           Client *
         </Label>
-        <Input
-          type="text"
-          required
+        <Combobox
           value={data.client}
-          onChange={e => set('client', e.target.value)}
+          onChange={v => set('client', v)}
+          options={clientOptions}
           placeholder="Nom du client"
+          aria-invalid={clientError}
         />
+        {clientError && (
+          <p className="text-sm text-destructive" role="alert">
+            {requiredError}
+          </p>
+        )}
       </div>
 
       <div className="space-y-2">
         <Label>
           <Building2 className="inline w-4 h-4 mr-1.5 -mt-0.5" />
-          Societe *
+          Société *
         </Label>
         <Select value={data.societe} onValueChange={v => set('societe', v as Societe)}>
           <SelectTrigger className="h-10">
@@ -67,15 +83,20 @@ export default function HeaderForm({ data, onChange }: Props) {
       <div className="space-y-2">
         <Label>
           <FolderOpen className="inline w-4 h-4 mr-1.5 -mt-0.5" />
-          Projet / Reference *
+          Projet / Référence *
         </Label>
-        <Input
-          type="text"
-          required
+        <Combobox
           value={data.projet}
-          onChange={e => set('projet', e.target.value)}
-          placeholder="Reference du projet"
+          onChange={v => set('projet', v)}
+          options={projetOptions}
+          placeholder="Référence du projet"
+          aria-invalid={projetError}
         />
+        {projetError && (
+          <p className="text-sm text-destructive" role="alert">
+            {requiredError}
+          </p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -86,9 +107,16 @@ export default function HeaderForm({ data, onChange }: Props) {
         <Input
           type="date"
           required
+          aria-required="true"
+          aria-invalid={dateError}
           value={data.date}
           onChange={e => set('date', e.target.value)}
         />
+        {dateError && (
+          <p className="text-sm text-destructive" role="alert">
+            {requiredError}
+          </p>
+        )}
       </div>
     </div>
   );

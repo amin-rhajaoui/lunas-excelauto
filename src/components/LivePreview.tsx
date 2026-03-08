@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Card } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import { calculatePrices, type AllPrices, type SheetPrices } from '../priceCalculator';
+import { SHEET_COLORS } from '../lib/sheetColors';
 import type { FormData } from '../types';
 
 interface Props {
@@ -12,42 +12,88 @@ function fmt(n: number): string {
   return n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' \u20AC';
 }
 
+function computeMargin(pv: number, pdr: number): number | null {
+  if (pv === 0) return null;
+  return ((pv - pdr) / pv) * 100;
+}
+
+function MarginBadge({ pv, pdr }: { pv: number; pdr: number }) {
+  const margin = computeMargin(pv, pdr);
+  if (margin === null) return null;
+  const color = margin >= 40 ? 'text-green-600 bg-green-50' : margin >= 20 ? 'text-amber-600 bg-amber-50' : 'text-red-600 bg-red-50';
+  return (
+    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${color}`}>
+      {margin.toFixed(1)}%
+    </span>
+  );
+}
+
 function SheetBlock({
   title,
-  color,
+  colorKey,
   prices,
   pvLabels,
   prixVenteAnnonce,
 }: {
   title: string;
-  color: string;
+  colorKey: keyof typeof SHEET_COLORS;
   prices: SheetPrices;
   pvLabels: string[];
   prixVenteAnnonce: Array<{ label: string; value: number }>;
 }) {
+  const c = SHEET_COLORS[colorKey];
+
   return (
-    <div>
-      <div className={`text-xs font-bold uppercase tracking-wider mb-2 ${color}`}>
-        {title}
+    <div className={`rounded-lg border-l-4 ${c.borderAccent} ${c.border} ${c.bgSubtle} p-3 space-y-2`}>
+      {/* Header */}
+      <div className="flex items-center gap-2 mb-1">
+        <span className={`h-2.5 w-2.5 rounded-full ${c.dot}`} />
+        <span className={`text-xs font-bold uppercase tracking-wider ${c.textHeading}`}>
+          {title}
+        </span>
       </div>
-      <div className="space-y-1 text-sm">
+
+      {/* Cost breakdown */}
+      <div className="space-y-0.5 text-[13px]">
         <Row label="Frais engages" value={prices.totalFrais} muted />
         <Row label="Matieres" value={prices.totalMatieres} />
         <Row label="Fabrication" value={prices.totalFabrication} />
         <Row label="Transport" value={prices.totalTransport} muted />
-        <div className="border-t border-border pt-1 mt-1">
-          <Row label="Prix de revient" value={prices.totalPrixDeRevient} bold />
+      </div>
+
+      {/* Prix de revient */}
+      <div className={`border-t ${c.border} pt-1.5`}>
+        <div className="flex justify-between text-[13px] font-semibold">
+          <span>Prix de revient</span>
+          <span className="tabular-nums">{fmt(prices.totalPrixDeRevient)}</span>
         </div>
+      </div>
+
+      {/* Prix de vente */}
+      <div className="space-y-1">
         {prices.prixDeVente.map((pv, i) => (
-          <Row key={i} label={pvLabels[i]} value={pv} bold highlight />
-        ))}
-        {prixVenteAnnonce.filter(p => p.value > 0).map((p, i) => (
-          <div key={i} className="flex justify-between font-semibold text-red-600">
-            <span className="truncate mr-2">{p.label}</span>
-            <span className="tabular-nums whitespace-nowrap">{fmt(p.value)}</span>
+          <div key={i} className={`flex justify-between items-center text-[13px] font-bold ${c.text}`}>
+            <span className="truncate mr-2">{pvLabels[i]}</span>
+            <div className="flex items-center gap-1.5">
+              <MarginBadge pv={pv} pdr={prices.totalPrixDeRevient} />
+              <span className="tabular-nums whitespace-nowrap">{fmt(pv)}</span>
+            </div>
           </div>
         ))}
       </div>
+
+      {/* Prix annonce */}
+      {prixVenteAnnonce.filter(p => p.value > 0).map((p, i) => (
+        <div key={i} className="flex justify-between items-center text-[13px]">
+          <span className="truncate mr-2 text-muted-foreground">{p.label}</span>
+          <div className="flex items-center gap-1.5">
+            <MarginBadge pv={p.value} pdr={prices.totalPrixDeRevient} />
+            <span className="tabular-nums whitespace-nowrap font-semibold text-orange-600">
+              {fmt(p.value)}
+            </span>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -55,22 +101,16 @@ function SheetBlock({
 function Row({
   label,
   value,
-  bold,
   muted,
-  highlight,
 }: {
   label: string;
   value: number;
-  bold?: boolean;
   muted?: boolean;
-  highlight?: boolean;
 }) {
   return (
-    <div className={`flex justify-between ${bold ? 'font-semibold' : ''} ${muted ? 'text-muted-foreground' : ''}`}>
+    <div className={`flex justify-between ${muted ? 'text-muted-foreground' : ''}`}>
       <span className="truncate mr-2">{label}</span>
-      <span className={`tabular-nums whitespace-nowrap ${highlight ? 'text-primary font-bold' : ''}`}>
-        {fmt(value)}
-      </span>
+      <span className="tabular-nums whitespace-nowrap">{fmt(value)}</span>
     </div>
   );
 }
@@ -79,44 +119,38 @@ export default function LivePreview({ form }: Props) {
   const prices: AllPrices = useMemo(() => calculatePrices(form), [form]);
 
   return (
-    <Card className="p-4 space-y-4 text-sm">
-      <h3 className="text-sm font-bold uppercase tracking-wide text-center">
+    <Card className="p-4 space-y-3">
+      <h3 className="text-xs font-bold uppercase tracking-wider text-center text-muted-foreground">
         Apercu des prix
       </h3>
 
       <SheetBlock
         title="Collection"
-        color="text-indigo-600"
+        colorKey="collection"
         prices={prices.collection}
         pvLabels={['PV Collection', 'PV Frais dessins']}
         prixVenteAnnonce={[{ label: 'PV annonce', value: form.margesCollection.prixVenteAnnonce }]}
       />
 
-      <Separator />
-
       <SheetBlock
         title="Presse"
-        color="text-green-600"
+        colorKey="presse"
         prices={prices.presse}
         pvLabels={['PV Presse']}
         prixVenteAnnonce={[{ label: 'PV annonce', value: form.margesPresse.prixVenteAnnonce }]}
       />
 
-      <Separator />
-
       <SheetBlock
         title="Prod Paris / 200m"
-        color="text-teal-600"
+        colorKey="prodParis"
         prices={prices.prodParis}
         pvLabels={['PV Prod Paris']}
         prixVenteAnnonce={[{ label: 'PV annonce', value: form.margesProdParis.prixVenteAnnonce }]}
       />
 
-      <Separator />
-
       <SheetBlock
         title="Prod Deloc"
-        color="text-pink-600"
+        colorKey="prodDeloc"
         prices={prices.prodDeloc}
         pvLabels={['200/500m', '501/2000m', '2001/3500m', '> 3500m']}
         prixVenteAnnonce={[

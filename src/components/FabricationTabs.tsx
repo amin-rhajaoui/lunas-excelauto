@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { SHEET_COLORS } from '../lib/sheetColors';
 import { formatTime, parseTime } from '../utils';
 import type {
   FabricationCollectionData,
@@ -63,34 +64,54 @@ export default function FabricationTabs(props: Props) {
   return (
     <Tabs defaultValue="collection">
       <TabsList className="mb-4">
-        <TabsTrigger value="collection">Collection</TabsTrigger>
-        <TabsTrigger value="presse">Presse</TabsTrigger>
-        <TabsTrigger value="prodParis">200m / Prod Paris</TabsTrigger>
-        <TabsTrigger value="prodDeloc">Prod deloc</TabsTrigger>
+        <TabsTrigger value="collection" className="gap-2">
+          <span className={`h-2 w-2 rounded-full ${SHEET_COLORS.collection.dot}`} />
+          Collection
+        </TabsTrigger>
+        <TabsTrigger value="presse" className="gap-2">
+          <span className={`h-2 w-2 rounded-full ${SHEET_COLORS.presse.dot}`} />
+          Presse
+        </TabsTrigger>
+        <TabsTrigger value="prodParis" className="gap-2">
+          <span className={`h-2 w-2 rounded-full ${SHEET_COLORS.prodParis.dot}`} />
+          200m / Prod Paris
+        </TabsTrigger>
+        <TabsTrigger value="prodDeloc" className="gap-2">
+          <span className={`h-2 w-2 rounded-full ${SHEET_COLORS.prodDeloc.dot}`} />
+          Prod deloc
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="collection">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <TimeInput label="Temps Collection" rate="30€/h" value={props.collection.tempsCollection} onChange={v => props.onChangeCollection({ ...props.collection, tempsCollection: v })} />
+        <div className={`rounded-lg border-l-4 ${SHEET_COLORS.collection.borderAccent} ${SHEET_COLORS.collection.border} ${SHEET_COLORS.collection.bgSubtle} p-4`}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <TimeInput label="Temps Collection" rate="30\u20AC/h" value={props.collection.tempsCollection} onChange={v => props.onChangeCollection({ ...props.collection, tempsCollection: v })} />
+          </div>
         </div>
       </TabsContent>
 
       <TabsContent value="presse">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <TimeInput label="Cout atelier M2P PRESSE" rate="48€/h" value={props.presse.coutAtelierPresse} onChange={v => props.onChangePresse({ coutAtelierPresse: v })} />
+        <div className={`rounded-lg border-l-4 ${SHEET_COLORS.presse.borderAccent} ${SHEET_COLORS.presse.border} ${SHEET_COLORS.presse.bgSubtle} p-4`}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <TimeInput label="Cout atelier M2P PRESSE" rate="48\u20AC/h" value={props.presse.coutAtelierPresse} onChange={v => props.onChangePresse({ coutAtelierPresse: v })} />
+          </div>
         </div>
       </TabsContent>
 
       <TabsContent value="prodParis">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <TimeInput label="Cout atelier M2P Production/200M" rate="48€/h" value={props.prodParis.coutAtelierProd200m} onChange={v => props.onChangeProdParis({ coutAtelierProd200m: v })} />
+        <div className={`rounded-lg border-l-4 ${SHEET_COLORS.prodParis.borderAccent} ${SHEET_COLORS.prodParis.border} ${SHEET_COLORS.prodParis.bgSubtle} p-4`}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <TimeInput label="Cout atelier M2P Production/200M" rate="48\u20AC/h" value={props.prodParis.coutAtelierProd200m} onChange={v => props.onChangeProdParis({ coutAtelierProd200m: v })} />
+          </div>
         </div>
       </TabsContent>
 
       <TabsContent value="prodDeloc">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <TimeInput label="Sous traitance Maroc" rate="7€/h" value={props.prodDeloc.sousTraitanceMaroc} onChange={v => props.onChangeProdDeloc({ ...props.prodDeloc, sousTraitanceMaroc: v })} />
-          <TimeInput label="Sous traitance Mada" rate="7.5€/h" value={props.prodDeloc.sousTraitanceMada} onChange={v => props.onChangeProdDeloc({ ...props.prodDeloc, sousTraitanceMada: v })} />
+        <div className={`rounded-lg border-l-4 ${SHEET_COLORS.prodDeloc.borderAccent} ${SHEET_COLORS.prodDeloc.border} ${SHEET_COLORS.prodDeloc.bgSubtle} p-4`}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <TimeInput label="Sous traitance Maroc" rate="7\u20AC/h" value={props.prodDeloc.sousTraitanceMaroc} onChange={v => props.onChangeProdDeloc({ ...props.prodDeloc, sousTraitanceMaroc: v })} />
+            <TimeInput label="Sous traitance Mada" rate="7.5\u20AC/h" value={props.prodDeloc.sousTraitanceMada} onChange={v => props.onChangeProdDeloc({ ...props.prodDeloc, sousTraitanceMada: v })} />
+          </div>
         </div>
       </TabsContent>
     </Tabs>

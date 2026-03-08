@@ -6,6 +6,11 @@ export function formatTime(decimalHours: number): string {
   return `${h}h${m.toString().padStart(2, '0')}`;
 }
 
+/** Format number to EUR currency string (fr-FR locale) */
+export function formatEuro(n: number): string {
+  return n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' \u20AC';
+}
+
 /** Parse "XhYY" string to decimal hours. Returns 0 on invalid input. */
 export function parseTime(input: string): number {
   const trimmed = input.trim();
